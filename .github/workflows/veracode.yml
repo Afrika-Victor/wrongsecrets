@@ -1,0 +1,37 @@
+# Veracode Connect (Afrika) — lab
+# Ativo: Pipeline Scan, SCA, IaC/Secrets, Upload & Scan, Issues e comentário no PR.
+# Pendente: baseline portal_afrika (portal_afrika_api_key com o Juan); policy_fail (bloqueio) desligado de propósito.
+name: Veracode
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  veracode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Veracode Connect
+        uses: Afrika-Tecnologia/Veracode-Connect@v1
+        with:
+          veracode_api_id: ${{ secrets.VERACODE_API_ID }}
+          veracode_api_key: ${{ secrets.VERACODE_API_KEY }}
+          veracode_appname: Afrika-Victor-${{ github.event.repository.name }}
+          enable_auto_packager: 'true'
+          enable_pipelinescan: 'true'
+          enable_sca: 'true'
+          veracode_sca_token: ${{ secrets.VERACODE_SCA_TOKEN }}
+          enable_iac: 'true'
+          enable_upload_scan: 'true'
+          baseline_mode: 'none'
+          create_issues: 'true'
+          comment_pr: 'true'
